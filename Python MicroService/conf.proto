@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package com.resumematch.grpc;
+
+service getMatchRatio{
+	rpc getratio (ResumeRequest) returns (ResumeResponse){}
+}
+
+message ResumeRequest{
+	string uniquekey = 1;
+	string url = 2;
+	string jd = 3;
+}
+
+
+message ResumeResponse{
+	string message = 1;
+}

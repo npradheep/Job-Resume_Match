@@ -1,0 +1,26 @@
+---------docker deploy
+docker build -t pythonresume .
+docker build -t spring .
+docker network create app
+docker run -d --name pythonresume --network app pythonresume:latest
+docker run -d --name spring -p 3003:3003 --network app spring:latest
+
+
+--------registry for kubernetes
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+docker tag spring localhost:5000/spring
+docker push localhost:5000/spring
+
+docker tag pythonresume localhost:5000/pythonresume
+docker push localhost:5000/pythonresume
+
+---------kubernetes deploy
+kubectl create deployment spring --image=localhost:5000/spring
+kubectl create deployment pythonresume --image=localhost:5000/pythonresume
+kubectl get deployment
+kubectl get pods
+kubectl expose deployment spring --type=LoadBalancer --port=3005 --target-port=3003
+kubectl expose deployment pythonresume --type=LoadBalancer --port=50051 --target-port=50051
+--to delete -- 
+kubectl delete deployment spring
